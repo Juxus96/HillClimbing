@@ -54,7 +54,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: 0
   timeToHit: 0
-  targetPos: {x: 14, y: 0, z: 0}
 --- !u!120 &120768090360416986
 LineRenderer:
   m_ObjectHideFlags: 1
@@ -101,7 +100,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.04716873
+        value: 0.013458122
         inSlope: 0
         outSlope: 0
         tangentMode: 0

@@ -924,7 +924,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1421930495}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -946,10 +946,14 @@ MonoBehaviour:
   velocityText: {fileID: 1137144188}
   rotationText: {fileID: 841544418}
   targetPos: {x: 14, y: 0, z: 0}
-  velocity: 12
+  currentForce: 0
   angleY: 45
   angleZ: 0
-  airForce: 5
+  airForce: 0
+  minAngleY: 30
+  maxAngleY: 60
+  minForce: 8
+  maxForce: 14
 --- !u!114 &1421930501
 MonoBehaviour:
   m_ObjectHideFlags: 0

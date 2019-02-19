@@ -13,10 +13,15 @@ public class Gun : MonoBehaviour {
     
     [Space]
     [Header("Variables to optimize")]
-    public float velocity;
+    public float currentForce;
     public float angleY;
     public float angleZ;
     public float airForce;
+
+    public float minAngleY;
+    public float maxAngleY;
+    public float minForce;
+    public float maxForce;
 
     private float g;
     private float radianAngleY;
@@ -31,21 +36,31 @@ public class Gun : MonoBehaviour {
     {
         if (Input.GetButtonDown("Jump"))
         {
-            radianAngleY = Mathf.Deg2Rad * angleY;
-            radianAngleZ = Mathf.Deg2Rad * angleZ;
+            float currentAngleY = minAngleY;
+            while (currentAngleY < maxAngleY - 1f)
+            {
+                radianAngleY = Mathf.Deg2Rad * currentAngleY;
+                radianAngleZ = Mathf.Deg2Rad * angleZ;
 
-            Vector3[] newShot = CalculateArray();
-            float score = CalculateScore(newShot[newShot.Length-1]); // the score of the new shot
-            float timeToHit = (targetPos.x - transform.position.x) / (velocity * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
+                currentForce = minForce;
+                while (currentForce < maxForce - 1f)
+                {
+                    Vector3[] newShot = CalculateArray();
+                    float score = CalculateScore(newShot[newShot.Length - 1]); // the score of the new shot
+                    float timeToHit = (targetPos.x - transform.position.x) / (currentForce * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
 
-            GetComponent<LineManager>().NewShot(newShot, score, timeToHit); // create the new shot
+                    GetComponent<LineManager>().NewShot(newShot, score, timeToHit); // create the new shot
+                    currentForce += 1f;
+                }
+                currentAngleY += 1f;
+            }
         }
         //angle and velocity adjustments
-        velocity += 0.1f * Input.GetAxis("Horizontal");
-        velocityText.text = "Velocity: " + velocity;
+        currentForce += 0.1f * Input.GetAxis("Horizontal");
+        velocityText.text = "Velocity: " + currentForce;
         angleY = Mathf.Clamp(angleY + 1 * Input.GetAxis("Vertical"),0.1f,90);
         angleText.text = "Angle: " + angleY;
-        angleZ = Mathf.Clamp(angleZ + 1 * Input.GetAxis("Vertical"), -89.01f, 89.01f);
+       // angleZ = Mathf.Clamp(angleZ + 1 * Input.GetAxis("Vertical"), -89.01f, 89.01f);
         rotationText.text = "Rotation: " + angleZ;
     }
 
@@ -56,7 +71,7 @@ public class Gun : MonoBehaviour {
         Vector3[] parabolaPoints = new Vector3[pointsOnParabola + 1]; 
 
         //the maximun distance a projectile can get (physics equation)
-        float maxDistance = (velocity * velocity * (1 + Mathf.Sqrt(1 + ((2 * g * transform.position.y) / (velocity * velocity * Mathf.Sin(radianAngleY) * Mathf.Sin(radianAngleY))))) * Mathf.Sin(2 * radianAngleY))/(2*g);
+        float maxDistance = (currentForce * currentForce * (1 + Mathf.Sqrt(1 + ((2 * g * transform.position.y) / (currentForce * currentForce * Mathf.Sin(radianAngleY) * Mathf.Sin(radianAngleY))))) * Mathf.Sin(2 * radianAngleY))/(2*g);
 
         //find the coordinates for each point of the parabola
         for (int i = 0; i <= pointsOnParabola; i++)
@@ -73,8 +88,8 @@ public class Gun : MonoBehaviour {
     Vector3 calculateParabolaPoint(float distanceBetweenPoints, float maxDistance)
     {
         float x = transform.position.x + distanceBetweenPoints * maxDistance; // the x coordinate is linear
-        float y = transform.position.y + x * Mathf.Tan(radianAngleY)-((g*x*x)/(2*velocity*velocity*Mathf.Cos(radianAngleY) * Mathf.Cos(radianAngleY))); // physics equation
-        float z = transform.position.z + x * Mathf.Tan(radianAngleZ) - ((airForce * x * x) / (2 * velocity * velocity * Mathf.Cos(radianAngleZ) * Mathf.Cos(radianAngleZ)));
+        float y = transform.position.y + x * Mathf.Tan(radianAngleY)-((g*x*x)/(2*currentForce*currentForce*Mathf.Cos(radianAngleY) * Mathf.Cos(radianAngleY))); // physics equation
+        float z = transform.position.z + x * Mathf.Tan(radianAngleZ) - ((airForce * x * x) / (2 * currentForce * currentForce * Mathf.Cos(radianAngleZ) * Mathf.Cos(radianAngleZ)));
         return new Vector3(x, y, z);
     }
 
