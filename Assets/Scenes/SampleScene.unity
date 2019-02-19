@@ -924,7 +924,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1421930495}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.4, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -945,7 +945,7 @@ MonoBehaviour:
   angleText: {fileID: 942498859}
   velocityText: {fileID: 1137144188}
   rotationText: {fileID: 841544418}
-  targetPos: {x: 14, y: 0, z: 0}
+  target: {fileID: 425303779}
   currentForce: 0
   angleY: 45
   angleZ: 0
@@ -965,6 +965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8254650e895b6c148be1001beb6144d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bestShot: {fileID: 0}
   LineRendererPrefab: {fileID: 1297148496112626, guid: 7a22aa9b70beb8e48a603dbd2716d972,
     type: 2}
   hitMat: {fileID: 2100000, guid: 2f0c6f64685f7bc47ae3fdc58ec586df, type: 2}

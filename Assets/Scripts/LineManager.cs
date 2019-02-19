@@ -2,7 +2,7 @@
 
 public class LineManager : MonoBehaviour {
  
-    private GameObject bestShot;
+    public GameObject bestShot;
     public GameObject LineRendererPrefab;
     public Material hitMat, missMat, bestMat;
 	

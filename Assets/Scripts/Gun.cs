@@ -9,7 +9,7 @@ public class Gun : MonoBehaviour {
     public Text angleText;
     public Text velocityText;
     public Text rotationText;
-    public Vector3 targetPos;
+    public Transform target;
     
     [Space]
     [Header("Variables to optimize")]
@@ -36,6 +36,12 @@ public class Gun : MonoBehaviour {
     {
         if (Input.GetButtonDown("Jump"))
         {
+            GetComponent<LineManager>().bestShot = null;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Destroy(transform.GetChild(i).gameObject);
+            }
+
             float currentAngleY = minAngleY;
             while (currentAngleY < maxAngleY - 1f)
             {
@@ -47,7 +53,7 @@ public class Gun : MonoBehaviour {
                 {
                     Vector3[] newShot = CalculateArray();
                     float score = CalculateScore(newShot[newShot.Length - 1]); // the score of the new shot
-                    float timeToHit = (targetPos.x - transform.position.x) / (currentForce * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
+                    float timeToHit = (target.position.x - transform.position.x) / (currentForce * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
 
                     GetComponent<LineManager>().NewShot(newShot, score, timeToHit); // create the new shot
                     currentForce += 1f;
@@ -96,7 +102,7 @@ public class Gun : MonoBehaviour {
     //if the last point is between the target radius (0.6) the score is 0 else the score is the distance.
     private float CalculateScore(Vector3 shot)
     {
-        return Vector3.Distance(shot, targetPos) < 0.3f ? 0 : Vector3.Distance(shot, targetPos);
+        return Vector3.Distance(shot, target.position) < 0.3f ? 0 : Vector3.Distance(shot, target.position);
     }
 
 }
