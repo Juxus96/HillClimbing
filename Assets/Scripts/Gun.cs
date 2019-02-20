@@ -14,6 +14,7 @@ public class Gun : MonoBehaviour {
     [Space]
     [Header("Variables to optimize")]
     public float currentForce;
+    public float currentAngleY;
     public float angleY;
     public float angleZ;
     public float airForce;
@@ -27,39 +28,20 @@ public class Gun : MonoBehaviour {
     private float radianAngleY;
     private float radianAngleZ;
 
+    private LineManager lineManager;
+
     private void Awake()
     {
         g = Mathf.Abs(Physics.gravity.y); //absolute force of the gravity for physics
+        lineManager = GetComponent<LineManager>();
     }
 
     private void Update()
     {
         if (Input.GetButtonDown("Jump"))
         {
-            GetComponent<LineManager>().bestShot = null;
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                Destroy(transform.GetChild(i).gameObject);
-            }
-
-            float currentAngleY = minAngleY;
-            while (currentAngleY < maxAngleY - 1f)
-            {
-                radianAngleY = Mathf.Deg2Rad * currentAngleY;
-                radianAngleZ = Mathf.Deg2Rad * angleZ;
-
-                currentForce = minForce;
-                while (currentForce < maxForce - 1f)
-                {
-                    Vector3[] newShot = CalculateArray();
-                    float score = CalculateScore(newShot[newShot.Length - 1]); // the score of the new shot
-                    float timeToHit = (target.position.x - transform.position.x) / (currentForce * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
-
-                    GetComponent<LineManager>().NewShot(newShot, score, timeToHit); // create the new shot
-                    currentForce += 1f;
-                }
-                currentAngleY += 1f;
-            }
+            HillClimbing();
+            //BruteForce();
         }
         //angle and velocity adjustments
         currentForce += 0.1f * Input.GetAxis("Horizontal");
@@ -68,6 +50,100 @@ public class Gun : MonoBehaviour {
         angleText.text = "Angle: " + angleY;
        // angleZ = Mathf.Clamp(angleZ + 1 * Input.GetAxis("Vertical"), -89.01f, 89.01f);
         rotationText.text = "Rotation: " + angleZ;
+    }
+
+    private void BruteForce()
+    {
+        lineManager.bestShot = null;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
+        currentAngleY = minAngleY;
+        while (currentAngleY < maxAngleY - 1f)
+        {
+            radianAngleY = Mathf.Deg2Rad * currentAngleY;
+            radianAngleZ = Mathf.Deg2Rad * angleZ;
+
+            currentForce = minForce;
+            while (currentForce < maxForce - 1f)
+            {
+                Vector3[] newShot = CalculateArray();
+                float score = CalculateScore(newShot[newShot.Length - 1]); // the score of the new shot
+                float timeToHit = (target.position.x - transform.position.x) / (currentForce * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
+
+                lineManager.NewShot(newShot, score, timeToHit); // create the new shot
+                currentForce += 1f;
+            }
+            currentAngleY += 1f;
+        }
+    }
+    
+    private void HillClimbing()
+    {
+        // Random values
+        currentAngleY = Random.Range(minAngleY, maxAngleY);
+        currentForce = Random.Range(minForce, maxForce);
+        radianAngleY = Mathf.Deg2Rad * currentAngleY;
+        radianAngleZ = Mathf.Deg2Rad * angleZ;
+        // Initial shot
+        Vector3[] newShot = CalculateArray();
+        float score = CalculateScore(newShot[newShot.Length - 1]); // the score of the new shot
+        float timeToHit = (target.position.x - transform.position.x) / (currentForce * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
+
+        // create the new shot
+        LineSetUp shot = lineManager.NewShot(newShot, score, timeToHit);
+
+        ////------------------------------------------
+
+        LineSetUp[] scoreArray = new LineSetUp[4];
+
+        float[] variablesToChange = { currentForce , currentAngleY };
+        float[] tweakStep = {1,-1 };
+
+        ////do
+        ////{
+        int counter = 0;
+        for (int i = 0; i < variablesToChange.Length; i++)
+        {
+            float currentParameter = variablesToChange[i];
+            for (int j = 0; j < tweakStep.Length; j++)
+            {
+                variablesToChange[i] += tweakStep[j];
+                print(currentForce);
+                newShot = CalculateArray();
+                score = CalculateScore(newShot[newShot.Length - 1]) ; // the score of the new shot
+
+                timeToHit = (target.position.x - transform.position.x) / (currentForce * Mathf.Cos(radianAngleY)); //the time needed to hit the ground
+
+                scoreArray[counter] = lineManager.NewShot(newShot, score, timeToHit);
+                counter++;
+                variablesToChange[i] = currentParameter;
+            }
+        }
+
+
+
+
+        // } while (CheckScore(scoreArray, shot));
+    }
+
+    private bool CheckScore(LineSetUp[] _shotArray, LineSetUp currentShot)
+    {
+        bool check = false;
+
+        for (int i = 0; i < _shotArray.Length; i++)
+        {
+            if (currentShot.score > _shotArray[i].score)
+            {
+                check = true;
+                //lineManager.bestShot.
+                break;
+            }
+        }
+
+        return check;
     }
 
     //calculates all the points of the parabola

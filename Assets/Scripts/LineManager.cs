@@ -2,12 +2,16 @@
 
 public class LineManager : MonoBehaviour {
  
+    // Best shot
     public GameObject bestShot;
+
+
+
     public GameObject LineRendererPrefab;
     public Material hitMat, missMat, bestMat;
 	
     //creates a new parabola and sets the color and the points
-	public void NewShot(Vector3[] points, float score, float timeToHit)
+	public LineSetUp NewShot(Vector3[] points, float score, float timeToHit)
     {
         GameObject newLine = Instantiate(LineRendererPrefab, transform);
         LineRenderer lr = newLine.GetComponent<LineRenderer>();
@@ -25,7 +29,9 @@ public class LineManager : MonoBehaviour {
             bestShot.GetComponent<LineRenderer>().material = bestShot.GetComponent<LineSetUp>().score == 0 ? hitMat : missMat;
             bestShot = newLine;
             lr.material = bestMat;
-        }        
+        }
+
+        return newLine.GetComponent<LineSetUp>();
     }
 
     //if the shot hit compares the time it get to hit, else compares the score of the hit
