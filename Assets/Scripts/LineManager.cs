@@ -11,12 +11,12 @@ public class LineManager : MonoBehaviour {
     public Material hitMat, missMat, bestMat;
 	
     //creates a new parabola and sets the color and the points
-	public LineSetUp NewShot(Vector3[] points, float score, float timeToHit)
+	public LineSetUp NewShot(Vector3[] points, float score, float timeToHit, ShotData shotData)
     {
         GameObject newLine = Instantiate(LineRendererPrefab, transform);
         LineRenderer lr = newLine.GetComponent<LineRenderer>();
 
-        newLine.GetComponent<LineSetUp>().SetUpLine(points,score, timeToHit);
+        newLine.GetComponent<LineSetUp>().SetUpLine(points,score, timeToHit, shotData);
         lr.material = score == 0 ? hitMat : missMat;
 
         if (bestShot == null)
