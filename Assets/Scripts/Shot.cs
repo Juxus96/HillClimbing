@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 
-
 [RequireComponent(typeof(LineRenderer))]
-public class LineSetUp : MonoBehaviour {
-
+public class Shot : MonoBehaviour
+{
     private LineRenderer lr;
     public float score;
     public float timeToHit;

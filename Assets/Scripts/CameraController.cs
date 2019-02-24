@@ -1,23 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CameraController : MonoBehaviour {
+/// <summary>
+/// Handles Game Cameras
+/// </summary>
+public class CameraController : MonoBehaviour
+{
+    public Camera[] cameras;
+    private int currentCam = 0;
 
-    public Camera cam1, cam2;
+    private void Start()
+    {
+        // Only enables the first camera
+        cameras[0].enabled = true;
+        for (int i = 1; i < cameras.Length; i++)
+            cameras[i].enabled = false;
+    }
 
-	// Use this for initialization
-	void Start () {
-        cam1.enabled = true;
-        cam2.enabled = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if(Input.GetKeyDown(KeyCode.C))
-        {
-            cam1.enabled = !cam1.enabled;
-            cam2.enabled = !cam2.enabled;
-        }
+    public void SwitchCamera()
+    {
+        // Goes to the next camera after disabling the previous one
+        cameras[currentCam].enabled = false;
+        if (++currentCam >= cameras.Length)
+            currentCam = 0;
+        cameras[currentCam].enabled = true;
     }
 }
