@@ -24,7 +24,7 @@ public class Shot : MonoBehaviour
         score = _score;
         timeToHit = _timeToHit;
         shotData.currentAngleY.Value = _shotData.currentAngleY.Value;
-        shotData.currentAngleZ.Value = _shotData.currentAngleY.Value;
+        shotData.currentAngleZ.Value = _shotData.currentAngleZ.Value;
         shotData.currentForce.Value = _shotData.currentForce.Value;
     }
 
