@@ -73,5 +73,8 @@ public class DataDisplay : MonoBehaviour
         goalTransform.position = new Vector3(value, goalTransform.position.y, goalTransform.position.z);
     }
 
-
+    public void MoveGoalDepth(float value)
+    {
+        goalTransform.position = new Vector3(goalTransform.position.x, goalTransform.position.y, value);
+    }
 }

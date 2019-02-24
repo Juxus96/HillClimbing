@@ -52,6 +52,7 @@ public class Gun : MonoBehaviour
         // Reset Data
         ClearShots();
         DataDisplay.instance.ResetDataDisplay();
+        
 
         // Create shot data
         ShotData shotData = new ShotData();
@@ -74,8 +75,6 @@ public class Gun : MonoBehaviour
             shotData.currentAngleY.Value = minAngleY;
             while (shotData.currentAngleY.Value < maxAngleY - 1f)
             {
-                print(shotData.currentAngleZ.Value);
-
                 radianAngleY = Mathf.Deg2Rad * shotData.currentAngleY.Value;
                 radianAngleZ = Mathf.Deg2Rad * shotData.currentAngleZ.Value;
                 shotData.currentForce.Value = minForce;
@@ -191,7 +190,6 @@ public class Gun : MonoBehaviour
         } while (!done);
 
         DataDisplay.instance.DisplayTotalData(totalShots, shot);
-
         // Shoot best projectile
         ShootProjectile(shot);
     }
@@ -204,7 +202,7 @@ public class Gun : MonoBehaviour
     {
         GameObject projectile = Instantiate(cannonBall, transform.position, cannonBall.transform.rotation);
         float bestShotAngleY = Mathf.Deg2Rad * shot.shotData.currentAngleY.Value;
-        projectile.AddComponent<Rigidbody>().AddForce(new Vector3(Mathf.Cos(bestShotAngleY), Mathf.Sin(bestShotAngleY), 0) * shot.shotData.currentForce.Value * 50);
+        projectile.AddComponent<Rigidbody>().AddForce(new Vector3(Mathf.Cos(bestShotAngleY), Mathf.Sin(bestShotAngleY), Mathf.Sin(shot.shotData.currentAngleZ.Value * Mathf.Deg2Rad)) * shot.shotData.currentForce.Value * 50);
         Destroy(projectile, 5);
     }
 
